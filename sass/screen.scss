@@ -1,0 +1,447 @@
+@charset "utf-8";
+@import "compass/reset";
+
+@import "h5bp";
+@include h5bp-display;
+@include h5bp-selection;
+@include h5bp-chromeframe;
+@include h5bp-media;
+@include h5bp-base;
+@include h5bp-typography;
+@include h5bp-figures;
+@include h5bp-forms;
+@include h5bp-embeds;
+@include h5bp-tables;
+@include h5bp-helpers;
+//@include h5bp-links;
+//@include h5bp-lists;
+
+@import "compass/layout";
+@import "compass/css3";
+@import "compass/typography";
+@import "compass/utilities";
+
+//spriting
+@import "social/*.png";
+
+//border-box-sizing for all elems
+*{@include box-sizing(border-box);}
+input[type=search]{@include box-sizing(border-box);}
+
+/*VARIABLES
+--------------------------------------------*/
+//set liks color here
+$linkDefaultColor:#b53228;
+$linkHoverColor:#b53228;
+$linkActiveColor:#b53228;
+$linkVisitedColor:#b53228;
+$linkFocusedColor:#b53228;
+//set colors here;
+$titleColor:blue;
+$attentionColor:red;
+$servColor:grey;
+//base font params--------------------
+$baseFontFamily: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+$baseFontColor: #666;
+$baseFontSize:15px;
+$baseLineHeight: 1.4;
+
+$servFont: myriadProSemiBold;
+$hdrFont: Verdana, Geneva, sans-serif;
+//layout params-----------------------
+$baseWidth: 1000px;
+$ftrHeight:140px;
+
+/*FONT FACEing
+---------------------------------------------------------*/
+@each $font-face in
+myriadProSemiBold{
+ @font-face {
+   font-family: $font-face; font-style: normal; font-weight: normal;
+   src: url('../fonts/#{$font-face}.eot');
+   src: url('../fonts/#{$font-face}.eot?#iefix') format('embedded-opentype'),
+   url('../fonts/#{$font-face}.woff') format('woff'),
+   url('../fonts/#{$font-face}.ttf')  format('truetype');
+ }
+}
+
+/*MEDIA mixins
+---------------------------------------------------------*/
+@mixin respond-to($media) {
+  @if $media == handhelds {
+    @media only screen and (max-width: 479px) { @content; }
+  }
+  @else if $media == wide-handhelds {
+    @media only screen and (min-width: 480px) and (max-width: 767px) { @content; }
+  }
+  @else if $media == tablets {
+    @media only screen and (min-width: 768px) and (max-width: 959px) { @content; }
+  }
+}
+
+/*HELPER CLASSES
+---------------------------------------------------------*/
+//floats
+.floatLt{float: left;}
+.floatRt{float: right;}
+//pseudo elems mixin
+@mixin pseudoBlockAbs{
+  content: '';
+  display: block;
+  position: absolute;
+}
+//vertical centering mixin
+@mixin vCtr{
+  display: table-cell;
+  height: inherit;
+  vertical-align: middle;
+}
+//for horisontal layouts
+@mixin flexList{
+  .flexbox &{@include display-box;}
+  .no-flexbox & > *{@include inline-block;}
+}
+.flexList{@include flexList;}
+@mixin hList{&>*{@include inline-block;}}
+.l-hList{@include hList;}
+@mixin jList{
+  text-align: justify;
+  line-height: 0;
+  font-size: 1px;
+  text-justify: newspaper;
+  zoom:1;
+  text-align-last: justify;
+  &:after{
+    content: "";
+    display: inline-block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    width: 100%;
+  }
+  >*{
+    text-align: left;
+    @include inline-block;
+    line-height: $baseLineHeight;font-size: $baseFontSize;
+  }
+}
+.l-jList{@include jList;}
+@mixin jList_singleLine{
+  .flexbox &{@include display-box; @include box-pack(justify);}
+  .no-flexbox &{@include jList;}
+}
+.l-jList_singleLine{@include jList;}
+//img wrapper
+@mixin imgWrap{
+  img{width:100%;height: 100%;}
+}
+//hack for ie9 - need for gradient backgrounds
+:root .gradient {filter: none \0/IE9; }
+@mixin ie9-gradient-support{
+  $experimental-support-for-svg: true;
+  @extend .gradient;
+}
+
+/*DEFAULT STYLES
+--------------------------------------------*/
+@mixin h1{font-size: 2em;margin: 0.67em 0;}
+@mixin h2{font-size: 1.5em;margin: 0.83em 0;}
+@mixin h3{font-size: 1.17em;margin: 1em 0;}
+@mixin h4{font-size: 1em;margin: 1.33em 0;}
+@mixin h5{font-size: 0.83em;margin: 1.67em 0;}
+@mixin h6{font-size: 0.75em;margin: 2.33em 0;}
+@mixin ul{margin: 1em 0;padding: 0 0 0 40px;}
+@mixin ol{margin: 1em 0;padding: 0 0 0 40px;}
+@mixin defaultCss{
+  h1{@include h1;}
+  h2{@include h1;}
+  h3{@include h1;}
+  ul{@include h1;}
+  ol{@include h1;}
+}
+.defaultCss{@include defaultCss;}
+@mixin link{
+  @include link-colors($linkDefaultColor, $linkHoverColor, $linkActiveColor, $linkVisitedColor, $linkFocusedColor);
+  @include single-transition(all,.4s,ease,0s);
+  &.active{color:$linkHoverColor;}
+  &:focus {outline: thin dotted;}
+  &:active,&:hover {outline: 0;}
+}
+a{@include link;}
+input,textarea{}
+
+/*OBJECTS mixins
+--------------------------------------------*/
+@mixin centering{
+  position: fixed;
+  width:1060px;
+  left:50%;
+  margin-left: -530px;
+}
+/*LAYOUT
+----------------------------------------------------------*/
+@mixin layout{
+  .l-pageWrap{
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    position: relative;
+  }
+  .l-centering{@include centering;}
+  .l-pageHeader{
+    min-width: 1000px;
+    background: url(../images/bg-hdr.png) 50% 100% no-repeat;
+    height: 390px;
+    position: relative;
+  }
+  .l-pageContentWrap{
+    min-width: 1000px;
+    @include jList;
+    >*{vertical-align: top;}
+    padding:35px 45px $ftrHeight + 90;
+    background: #fff url(../images/shadow-content_top.jpg) repeat-x;
+    @include box-shadow(0 5px 5px rgba(0,0,1,.08));
+  }
+  .l-pageFooter{
+    position: relative;
+    height: $ftrHeight;
+    margin: -$ftrHeight auto 0;
+    background: #70ba37;
+  }
+  .l-pageWidthContainer{
+    width: $baseWidth;
+    margin:0 auto;
+  }
+}
+html, button, input, select, textarea {
+  height: 100%;
+  font-family: $baseFontFamily;
+  color: $baseFontColor;
+}
+body {
+  height: 100%;
+  font-size: $baseFontSize;
+  line-height: $baseLineHeight;
+  @include layout;
+  background: url(../images/bg-body.jpg) repeat-x, url(../images/bg-body__flowers.png) 50% 50% no-repeat;
+  background-color: #ddeeb8 ;
+}
+
+.l-pageWrap {}
+/* page header
+----------------------------------*/
+.b-phone{
+  position: absolute;
+  right:0;
+  top:20px;
+  //border: solid 3px #fff;
+  font: 35px $servFont;
+  text-transform: uppercase;
+  color: #ffba6f;
+  text-shadow: 0 3px 1px #fff, 0 5px 5px rgba(0,0,1,.1);
+  padding-left: 40px;
+  background: url(../images/icon-phone.png) 0 100% no-repeat;
+  &:before{content: '☎✆☏';}
+}
+//main logotype
+.b-hdrLogo{
+  position: absolute;
+  left:60px;
+  top:20px;
+}
+//main navigation
+.b-mainNav{
+  position: absolute;
+  bottom:0;
+  width:100%;
+  ul{
+    @include jList_singleLine;
+    border-bottom: 2px solid #fff;
+    padding:0 30px;
+  }
+  li{vertical-align: bottom;}
+  .item{
+    outline: none;
+    padding: 15px 26px;
+    display: block;
+    color:#fff;
+    font:14px $servFont;
+    text-decoration: none;
+    text-shadow: 0 -1px rgba(0,0,0,.25);
+    @include ie9-gradient-support;
+    @include border-radius(4px 4px 0 0);
+    &:hover,&:focus{
+      outline: none;
+    }
+    &.item-1{
+      background-color: #00b6cc;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+
+    }
+    &.item-2{
+      background-color: #f89828;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-3{
+      background-color: #f06781;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-4{
+      background-color: #009ddc;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-5{
+      background-color: #1fb259;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-6{
+      background-color: #00b6cc;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-7{
+      background-color: #9a5aa4;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+    &.item-8{
+      background-color: #0bb497;
+      @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+    }
+
+  }
+}
+
+/*INDEPENDENT MODULES styles
+-----------------------------------------------------------------------------------------------*/
+.b-news{
+  width:230px;
+  .title{
+    font: 30px $hdrFont;
+    color: #f89829;
+    margin-bottom:30px
+  }
+  .item{margin-bottom: 30px;}
+  img{
+    @include border-radius;
+    width:70px;height: 70px;
+    vertical-align: top;
+  }
+  time{
+    display: block;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: bold;
+    border-bottom: 1px solid $baseFontColor;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+  .item__title{
+    font: italic bold 20px $baseFontFamily;
+    color:#f89829;
+  }
+  .item__content{
+    &:first-letter{font-weight: bold;font-size: 30px;color:#f89829;line-height: 1;}
+  }
+  .m_width_135{width:135px;}
+}
+.b-index_article{
+  width:375px;
+  .title{
+    font: 30px $hdrFont;
+    color: #00a9e1;
+    margin-bottom: 30px;
+  }
+  img{
+    display: block;
+    width:375px;
+    height: 285px;
+    @include border-radius(15px);
+  }
+  .content{
+    margin-top: 20px;
+    &:first-letter{font-weight: bold;font-size: 30px;color:#00a9e1;line-height: 1;}
+  }
+}
+.b-bnrs{
+  width:270px;
+  padding-top: 47px;
+  img{
+    display: block;
+    margin-top: 20px;
+  }
+}
+
+.b-additionalNav{
+  background: #7ac142;
+  border-bottom: 1px solid #9ae45f;
+  height: 70px;
+  ul{
+    @include centering;
+    @include jList_singleLine;
+    padding:25px 0;
+  }
+  li{
+    .flexbox &{@include box-flex(1);}
+    &:last-child .item:before{display: none;}
+  }
+  .item{
+    .no-flexbox &{padding:0 35px;}
+    display: block;
+    text-align: center;
+    font: 14px $servFont;
+    color:#fff;
+    text-shadow: 0 -1px rgba(0,0,0,.25);
+    text-decoration: none;
+    position: relative;
+    &:before{
+      content: '|';
+      position: absolute;
+      right:0;
+    }
+  }
+}
+.l-ftrBottom{
+  border-top: 1px solid #4fa00f;
+  padding:18px 0;
+  >div{
+    min-width: 1000px;
+    padding:0 34px;
+    @include centering;
+    @include jList;
+
+  }
+}
+.b-copy{
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 13px;
+  color:#fff;
+}
+.b-social{
+  @include hList;
+  .item{
+    width:32px;
+    height: 32px;
+  }
+  @for $i from 1 through 4{
+    .item-#{$i}{@include social-sprite(soc_#{$i});}
+  }
+}
+/*main page specific elements styles
+-----------------------------------------------------------------------------------------------*/
+
+/*some page specific elements styles
+------------------------------------------------------------------------------------------------*/
+/*some page specific elements styles
+------------------------------------------------------------------------------------------------*/
+/*plugins styles
+------------------------------------------------------------------------------------------------*/
+
+
+//debug
+//* { outline: 2px dotted red; }
+//* * { outline: 2px dotted green; }
+//* * * { outline: 2px dotted orange; }
+//* * * * { outline: 2px dotted blue; }
+//* * * * * { outline: 1px solid red; }
+//* * * * * * { outline: 1px solid green; }
+//* * * * * * * { outline: 1px solid orange; }
+//* * * * * * * * { outline: 1px solid blue; }
