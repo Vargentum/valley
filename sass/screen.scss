@@ -49,7 +49,7 @@ $baseLineHeight: 1.4;
 $servFont: myriadProSemiBold;
 $hdrFont: Verdana, Geneva, sans-serif;
 //layout params-----------------------
-$baseWidth: 1000px;
+$baseWidth: 993px;
 $ftrHeight:140px;
 
 /*FONT FACEing
@@ -68,14 +68,8 @@ myriadProSemiBold{
 /*MEDIA mixins
 ---------------------------------------------------------*/
 @mixin respond-to($media) {
-  @if $media == handhelds {
-    @media only screen and (max-width: 479px) { @content; }
-  }
-  @else if $media == wide-handhelds {
-    @media only screen and (min-width: 480px) and (max-width: 767px) { @content; }
-  }
-  @else if $media == tablets {
-    @media only screen and (min-width: 768px) and (max-width: 959px) { @content; }
+  @if $media == wider {
+    @media only screen and (min-width: 1200px) { @content; }
   }
 }
 
@@ -172,12 +166,7 @@ input,textarea{}
 
 /*OBJECTS mixins
 --------------------------------------------*/
-@mixin centering{
-  position: fixed;
-  width:1060px;
-  left:50%;
-  margin-left: -530px;
-}
+
 /*LAYOUT
 ----------------------------------------------------------*/
 @mixin layout{
@@ -186,21 +175,17 @@ input,textarea{}
     height: auto !important;
     height: 100%;
     position: relative;
+    margin:0 auto;
+    width:$baseWidth;
+    @include respond-to(wider){width:$baseWidth + 60;}
   }
-  .l-centering{@include centering;}
   .l-pageHeader{
-    min-width: 1000px;
     background: url(../images/bg-hdr.png) 50% 100% no-repeat;
     height: 390px;
     position: relative;
   }
   .l-pageContentWrap{
-    min-width: 1000px;
-    @include jList;
-    >*{vertical-align: top;}
-    padding:35px 45px $ftrHeight + 90;
-    background: #fff url(../images/shadow-content_top.jpg) repeat-x;
-    @include box-shadow(0 5px 5px rgba(0,0,1,.08));
+     padding-bottom: $ftrHeight + 90px;
   }
   .l-pageFooter{
     position: relative;
@@ -223,25 +208,31 @@ body {
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   @include layout;
-  background: url(../images/bg-body.jpg) repeat-x, url(../images/bg-body__flowers.png) 50% 50% no-repeat;
-  background-color: #ddeeb8 ;
+  background: #ddeeb8 url(../images/bg-body__flowers.png) 50% 50%;
+  background: url(../images/bg-body__flowers.png) 50% 50%, url(../images/bg-body.jpg) 0 0 repeat-x;
+  background-color: #ddeeb8;
+  position: relative;
 }
-
-.l-pageWrap {}
+.bg-top{
+  position: absolute;
+  height:460px;
+  width:100%;
+  background: url(../images/bg-body.jpg) repeat-x;
+  left: 0;top:0;
+  z-index: -1;
+}
 /* page header
 ----------------------------------*/
 .b-phone{
   position: absolute;
   right:0;
   top:20px;
-  //border: solid 3px #fff;
   font: 35px $servFont;
   text-transform: uppercase;
   color: #ffba6f;
   text-shadow: 0 3px 1px #fff, 0 5px 5px rgba(0,0,1,.1);
   padding-left: 40px;
   background: url(../images/icon-phone.png) 0 100% no-repeat;
-  &:before{content: '☎✆☏';}
 }
 //main logotype
 .b-hdrLogo{
@@ -259,12 +250,29 @@ body {
     border-bottom: 2px solid #fff;
     padding:0 30px;
   }
-  li{vertical-align: bottom;}
+  li{
+    vertical-align: bottom;
+    .flexbox &{
+      @include box-flex(1);margin-right: 3px;
+      &:last-child{margin-right: 0;}
+    }
+  }
   .item{
+    text-align: center;
     outline: none;
-    padding: 15px 26px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .no-flexbox &{
+      padding-left: 17px;
+      padding-right: 17px;
+      @include respond-to(wider){
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
     display: block;
     color:#fff;
+    text-transform: uppercase;
     font:14px $servFont;
     text-decoration: none;
     text-shadow: 0 -1px rgba(0,0,0,.25);
@@ -274,8 +282,10 @@ body {
       outline: none;
     }
     &.item-1{
+      height: 48px;
       background-color: #00b6cc;
       @include background-image(linear-gradient(bottom, rgba(0,0,0,.28), rgba(255,255,255,.28)));
+      .ie7 &{height: auto;}
 
     }
     &.item-2{
@@ -375,7 +385,9 @@ body {
   border-bottom: 1px solid #9ae45f;
   height: 70px;
   ul{
-    @include centering;
+    width:$baseWidth;
+    margin:0 auto;
+    @include respond-to(wider){width:$baseWidth + 60;}
     @include jList_singleLine;
     padding:25px 0;
   }
@@ -384,7 +396,14 @@ body {
     &:last-child .item:before{display: none;}
   }
   .item{
-    .no-flexbox &{padding:0 35px;}
+    .no-flexbox &{
+      padding-left: 30px;
+      padding-right: 30px;
+      @include respond-to(wider){
+        padding-left: 35px;
+        padding-right: 35px;
+      }
+    }
     display: block;
     text-align: center;
     font: 14px $servFont;
@@ -403,11 +422,11 @@ body {
   border-top: 1px solid #4fa00f;
   padding:18px 0;
   >div{
-    min-width: 1000px;
-    padding:0 34px;
-    @include centering;
+    width:$baseWidth;
+    margin:0 auto;
+    @include respond-to(wider){width:$baseWidth + 60;padding:0 31px 0 34px;}
+    padding:0 26px 0 29px;
     @include jList;
-
   }
 }
 .b-copy{
@@ -425,15 +444,15 @@ body {
     .item-#{$i}{@include social-sprite(soc_#{$i});}
   }
 }
-/*main page specific elements styles
------------------------------------------------------------------------------------------------*/
-
-/*some page specific elements styles
-------------------------------------------------------------------------------------------------*/
-/*some page specific elements styles
-------------------------------------------------------------------------------------------------*/
-/*plugins styles
-------------------------------------------------------------------------------------------------*/
+//index page template ================>
+.template-indexPage{
+  @include jList;
+  background: #fff url(../images/shadow-content_top.jpg) repeat-x;
+  @include box-shadow(0 5px 5px rgba(0,0,1,.08));
+  >*{vertical-align: top;}
+  padding:35px;
+  @include border-radius(0 0 5px 5px);
+}
 
 
 //debug
